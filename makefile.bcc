@@ -1,0 +1,88 @@
+# Borland C++ 3.1 makefile for cawf
+
+# Compiler
+
+CL=	bcc $(CFLAGS)
+
+# Memory model
+
+M=	s
+
+# Special definitions
+#
+#    _ANSI   -- force ANSI prototypes (see "ansi.h")
+#    _BCC    -- use Borland C++ 3.1 specifics
+#    _STDLIB -- use <stdlib.h>
+
+D=	-D_ANSI -D_BCC -DSTDLIB
+
+# All compiler flags
+
+CFLAGS=	-Ic:\borlandc\include $(D) -w -Og -m$(M)
+
+# Loader flags
+
+LFLAGS=	-Lc:\borlandc\lib
+
+# Object and source strings for bsfilt.exe
+
+BOBJ=	bsfilt.obj
+BSRC=	bsfilt.c
+
+# Header, object, and  source strings for cawf.exe
+
+CHDR=	ansi.h cawf.h cawflib.h proto.h regexp.h regmagic.h
+COBJ=	cawf.obj device.obj error.obj expand.obj expr.obj getopt.obj \
+	macsup.obj nreq.obj output.obj pass2.obj pass3.obj regerror.obj \
+	regexp.obj store.obj string.obj
+CSRC=	cawf.c device.c error.c expand.c expr.c getopt.c macsup.c \
+        nreq.c output.c pass2.c pass3.c regerror.c regexp.c store.c \
+	string.c
+
+all: bsfilt.exe cawf.exe
+
+bsfilt.exe: $(BOBJ)
+	$(CL) -m$(M) -2 $(LFLAGS) $(BOBJ)
+
+.C.OBJ:
+	$(CL) -c $(CFLAGS) $*.c
+
+cawf.exe: $(COBJ)
+	$(CL) -m$(M) -2 $(LFLAGS) @&&!
+$(COBJ)
+!
+
+cawf.obj: $(CHDR) cawf.c
+
+clean:
+	del *.obj
+	del bsfilt.exe
+	del cawf.exe
+
+device.obj: $(CHDR) device.c
+
+error.obj: $(CHDR) error.c
+
+expand.obj: $(CHDR) expand.c
+
+expr.obj: $(CHDR) expr.c
+
+getopt.obj: $(CHDR) getopt.c
+
+macsup.obj: $(CHDR) macsup.c
+
+nreq.obj: $(CHDR) nreq.c
+
+output.obj: $(CHDR) output.c
+
+pass2.obj: $(CHDR) pass2.c
+
+pass3.obj: $(CHDR) pass3.c
+
+regerror.obj: $(CHDR) regerror.c
+
+regexp.obj: $(CHDR) regexp.c
+
+store.obj: $(CHDR) store.c
+
+string.obj: $(CHDR) string.c

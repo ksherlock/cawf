@@ -1,0 +1,78 @@
+# Makefile for cawf
+#
+# - for GNU gcc (emx 0.8g kit) [executables for OS/2 2.x or DOS (32-bit)]
+# - for Microsoft C 6.00A      [executables for OS/2 or MSDOS (16-bit)]
+
+# To use, enter "make -f Makefile.os2" (this makefile depends on its
+# name being "Makefile.os2").
+#
+# Tested with dmake 3.8 and GNU make 3.68 under OS/2
+
+default:
+	@echo "Enter $(MAKE) -f Makefile.os2 target                      "
+	@echo " where 'target' is chosen from                          " 
+	@echo "   msc      OS/2 exe [Microsoft C 6.00a]                "
+	@echo "   mscbnd   OS/2 and DOS exe [Microsoft C 6.00a]        "
+	@echo "   emx      OS/2 32-bit exe [EMX/gcc; uses emxlibc.dll] "
+	@echo "   emxbnd   OS/2 and DOS 32-bit exe [EMX/gcc]           "
+
+
+msc: 
+	$(MAKE) -f Makefile.os2 all \
+	CC="cl -nologo -AS" O=".obj" \
+	CFLAGS="-Za" \
+	OBJ2="getopt.obj" \
+	LFLAGS="-Lp setargv.obj -link /NOE" \
+	BIT=""
+
+mscbnd: 
+	$(MAKE) -f Makefile.os2 all \
+	CC="cl -nologo -AS" O=".obj" \
+	CFLAGS="-Za" \
+	OBJ2="getopt.obj" \
+	LFLAGS="-Lp -Fb setargv.obj -link /NOE" \
+	BIT=""
+
+emx:  
+	$(MAKE) -f Makefile.os2 all \
+	CC="gcc -Zomf -Zmtd" O=".obj" \
+	CFLAGS="-O" \
+	OBJ2="" \
+	LFLAGS="-s" \
+	BIT="32"
+	
+emxbnd:  
+	$(MAKE) -f Makefile.os2 all \
+	CC="gcc" O=".o" \
+	CFLAGS="-O" \
+	OBJ2="" \
+	LFLAGS="-s" \
+	BIT="32"
+
+
+DEFS = -DSTDLIB -DCAWFLIB=\"c:/bin/cawf\"
+
+.c$O: 
+	$(CC) $(CFLAGS) $(DEFS) -c $<
+
+HDR = ansi.h cawf.h cawflib.h proto.h regexp.h regmagic.h
+
+SRC = cawf.c device.c error.c expand.c expr.c getopt.c macsup.c nreq.c \
+      output.c pass2.c pass3.c  regerror.c regexp.c store.c string.c
+
+OBJ = cawf$O device$O error$O expand$O expr$O macsup$O nreq$O \
+      output$O pass2$O pass3$O  regerror$O regexp$O store$O string$O $(OBJ2)
+
+all:	bsfilt.exe cawf.exe
+
+bsfilt.exe : bsfilt$O bsfilt$(BIT).def
+	${CC} -o $@ bsfilt$O bsfilt$(BIT).def $(LFLAGS)
+
+cawf.exe: ${OBJ} cawf$(BIT).def
+	${CC} -o $@ ${OBJ} cawf$(BIT).def $(LFLAGS)
+
+clean:
+	rm -f *.o *.obj a.out core *errs bsfilt.exe cawf.exe
+
+${OBJ}:	${HDR}
+

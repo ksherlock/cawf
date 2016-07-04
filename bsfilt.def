@@ -1,0 +1,3 @@
+NAME bsfilt WINDOWCOMPAT NEWFILES
+DESCRIPTION 'bsfilt - a colcrt-like processor for cawf(1)'
+STACKSIZE 0x1000

@@ -1,0 +1,423 @@
+
+		Differences between Cawf and Nroff or Troff
+
+===============================================
+1. Cawf supports some nroff and troff requests.
+===============================================
+
+Font and Character Size Control
+
+						  		    cawf
+
+  .ps	Point size						    Yes
+  .fz	font F to point size +-N				     No
+  .fz	Special Font characters to point size +-N		     No
+  .ss	Space-character size					     No
+  .cs	Constant character					     No
+  .bd	Embolden font F by N-1 units				     No
+  .bd	Embolden Special Font when current font is F		     No
+  .ft	Change to font						    Yes
+  .fp	Font named F mounted on physical position 1<=N<=4	     No
+  .pl	Page length						    Yes
+  .bp	Eject current page; next page number N			    Yes [1]
+  .pn	Next page number N					     No
+  .po	Page offset						    Yes
+  .ne	Need N vertical space					    Yes
+  .mk	Mark current vertical place in register R		     No
+  .rt	Return (upward only) to marked vertical place		     No
+
+Text Filling, Adjusting, and Centering
+
+  .br	Break							    Yes
+  .fi	Fill output lines					    Yes
+  .nf	No filling or adjusting of output lines			    Yes
+  .ad	Adjust output lines with mode c				    Yes [2]
+  .na	No output line adjusting				    Yes
+  .ce	Center following N input text lines			    Yes
+
+Vertical Spacing
+
+  .vs	Vertical base line spacing (V)				    Yes
+  .ls	Output N-1 Vs after each text output line		    Yes
+  .sp	Space vertical distance N in either direction		    Yes [3]
+  .sv	Save vertical distance N				     No
+  .os	Output saved vertical distance				     No
+  .ns	Turn no-space mode on					    Yes
+  .rs	Restore spacing; turn no-space mode off			    Yes
+
+Line Length and Indenting
+
+  .ll	Line length						    Yes
+  .in	Indent							    Yes
+  .ti	Temporary indent					    Yes
+
+Macros, Strings, Diversion, and Position Traps
+
+  .de	Define or redefine macro xx; end at call of yy		    Yes [4]
+  .am	Append to a macro					     No
+  .ds	Define a string xx containing <string>			    Yes
+  .as	Append <string> to string xx				     No
+  .rm	Remove request, macro, or string			    Yes
+  .rn	Rename request, macro, or string xx to yy		    Yes
+  .di	Divert output to macro xx				    Yes [5]
+  .da	Divert and append to xx					     No
+  .wh	Set location trap; negative is w.r.t. page bottom	     No [6]
+  .ch	Change trap location					     No
+  .dt	Set a diversion trap					     No
+  .it	Set an input-line count trap				    Yes
+  .em	End macro is xx						     No
+
+Number Registers
+  .nr	Define and set number register R; auto-increment by M	    Yes [7]
+  .af	Assign format to register R (c=1, i, I, a, A)		     No [8]
+  .rr	Remove register I					    Yes
+
+Tabs, Leaders, and Fields
+  .ta	Tab settings; left type, unless t=R (right), C (centered)   Yes [8]
+  .tc	Tab repetition character				     No
+  .lc	Leader repetition character				     No
+  .fc	Set field delimiter a and pad character b		     No
+
+Input and Output Conventions and Character Translations
+
+  .ec	Set escape character					     No
+  .eo	Turn off escape character mechanism			     No
+  .lg	Ligature mode on if N>0					    Yes [9]
+  .ul	Underline (italicize in troff) N input lines		     No
+  .cu	Continuous underline in nroff; like .ul in troff	     No
+  .uf	Underline font set to F (to be switched to by .ul)	     No
+  .cc	Set control character to c				     No
+  .c2	Set nobreak control character to c			     No
+  .tr	Translate a to b, etc. on output			    Yes
+
+Local Horizontal and Vertical Motions, and the Width Function
+
+Overstrike, Bracket, Line-drawing, and Zero-width Functions
+
+Hyphenation
+
+  .nh	No hyphenation						     No
+  .hy	Hyphenate; I = mode					     No
+  .hc	Hyphenation indicator character c			     No
+  .hw	Exception words						     No
+
+Three Part Titles.
+
+  .tl	Three part title					    Yes
+  .pc	Page number character					     No
+  .lt	Length of title						    Yes
+
+Output Line Numbering.
+
+  .nm	Number mode on or off, set parameters			     No
+  .nn	Do not number next \fIN\fR lines			     No
+
+Conditional Acceptance of Input
+
+  .if	If condition c true, accept <anything> as input, for	    Yes [10] 
+	multi-line use <\{anything\}>
+  .if	If condition c false, accept <anything>			    Yes [10]
+  .if	If expression N > 0, accept <anything>			     No
+  .if	If expression N <= 0, accept <anything>			     No
+  .if	If <string1> identical to <string2> accept <anything>	    Yes [10]
+  .if	If <string1> not identical to <string2> accept <anything>   Yes [10]
+  .ie	If portion of if-else; all above forms (like .if)	    Yes [10]
+  .el	Else portion of if-else					    Yes
+
+Environment Switching.
+  .ev	Environment switched (push down)			     No
+
+Insertions from the Standard Input
+  .rd	Read insertion						     No
+  .ex	Exit from nroff or troff				     No
+
+Input/Output File Switching
+
+  .so	Switch source file (push down)				    Yes [11]
+  .nx	Next file						     No
+  .pi	Pipe output to program (nroff only)			     No
+
+Miscellaneous
+  .mc	Set margin character c and separation N			     No
+  .tm	Print <string> on terminal (UNIX standard error)	    Yes
+  .ig	Ignore till call of yy					     No
+  .pm	Print macro names and sizes; if t present, print only	     No
+	total of sizes
+  .ab	Print a message and abort				     No
+  .fl	Flush output buffer					    Yes
+
+Notes
+
+  [1]  Can't specify next page number N on .bp.
+
+  [2]  Can't specify mode c on .ad.
+
+  [3]  Can only space forward vertically with .sp.
+
+  [4]  Cannot redefine end of macro call yy for .de.  It is always ``..''.
+
+  [5]  Can only divert to /dev/null with .di.
+
+  [6]  Some page header and footer handling is built in.
+
+  [7]  Auto-increment not supported for .nr.
+
+  [8]  Only left adjusted tabs are supported for .ta.
+
+  [9] The .i0 (obsolete), .lg and .li (obsolete) requests are silently ignored.
+
+  [10] The only .if and .ie conditions supported are numeric comparisons on
+       arguments; string comparisons between a macro parameter and a literal;
+       n for nroff, always true; and t for troff, always false.
+
+       The \{anything\} block construct is not supported for .if or .ie.
+
+  [11] The .so push-down stack is limited to five entries.
+
+
+
+=====================================================================
+2. Cawf supports some nroff or troff escape sequences for characters,
+   indicators, and functions.
+=====================================================================
+
+Escape
+Sequence    Meaning						      cawf
+
+\\	    Prevent or delay the interpretation of \		       Yes [12]
+\e	    Printable version of the current escape character	       Yes [12]
+\'	    ' (acute accent); equivalent to \(aa		       Yes [12]
+\`	    ` (grave accent); equivalent to \(ga		       Yes [12]
+\-	    - Minus sign in the current font			       Yes [12]
+\.	    Period (dot) (see .de)					No
+\(space)    Unpaddable space-size space character		       Yes
+\0	    Digit width space					       Yes [13]
+\|	    1/6 em narrow space character (zero width in nroff)	       Yes [13]
+\^	    1/12 em half-narrow space character (zero width in nroff)  Yes [13]
+\&	    Non-printing, zero width character			       Yes [13]
+\!	    Transparent line indicator					No
+\"	    Beginning of comment				       Yes
+\$N	    Interpolate argument 1<=IN<=9			       Yes
+\%	    Default optional hyphenation character		       Yes
+\(xx	    Character named xx					       Yes
+\*x	    Interpolate string x				       Yes
+\(*xx	    Interpolate string xx				       Yes
+\a	    Non-interpreted leader character				No
+\b'abc...'  Bracket building function
+\c	    Interrupt text processing				       Yes
+\d	    Forward (down) (1/l2 em vertical motion (1/2 line in	No
+	    nroff)
+\fx	    Change to font named x				       Yes
+\f(xx	    Change to font named xx					No
+\fN	    Change to font position N					No
+\h'N'	    Local horizontal motion; move right N (negative left)      Yes [14]
+\k	    Mark horizontal input place in register x		       Yes
+\l'Nc'	    Horizontal line drawing function (optionally with c)	No
+\L'Nc'	    Vertical line drawing function (optionally with c)		No
+\nx \n(xx   Interpolate number register x or xx			       Yes
+\o'abc...'  Overstrike characters a, b, c, ...				No
+\p	    Break and spread output line				No
+\r	    Reverse 1 em vertical motion (reverse line in nroff)	No
+\sN \s+-N   Point-size change function					No [15]
+\t	    Non-interpreted horizontal tab				No
+\u	    Reverse (up) 1/l2 em vertical motion (1/2 line in nroff)    No
+\v'N'	    Local vertical motion; move down N (negative up)		No
+\w'string'  Interpolate width of <string>			       Yes
+\x'N'	    Extra line-space function (negative before, positive	No
+	    after)
+\zc	    Print c with zero width (without spacing)			No
+\{	    Begin conditional input					No
+\}	    End conditional input					No
+\(newline) Concealed (ignored) newline					No
+\X	    X, any character not listed above			       Yes
+
+Notes
+
+  [12]  These characters are defined in cawf's standard dumb.dev file.
+
+  [13]  The characters are defined to be zero-length in cawf's standard
+        dumb.dev file.
+
+  [14]  Only right horizontal motions (positive N) are permitted with \h.
+
+  [15]  \s is silently ignored.
+
+
+=========================================================================
+3. Cawf supports some nroff or troff predefined general number registers.
+=========================================================================
+
+Register
+Name	  Description						      Cawf
+
+\%	  Current page number					       Yes
+c.	  Number of lines read from current input file			No
+ct	  Character type (set by width function)			No
+dl	  Width (maximum) of last completed diversion			No
+dn	  Height (vertical size) of last completed diversion		No
+dw	  Current day of the week (1-7)					No
+dy	  Current day of the month (1-31)				No
+hp	  Current horizontal place on input line (not in ditroff)	No
+ln	  Output line number						No
+mo	  Current month (1-12)						No
+nl	  Vertical position of last printed text base-line		No
+sb	  Depth of string below base line (generated by width function) No
+st	  Height of string above base line (generated by width		No
+	  function)
+yr	  Last two digits of current year				No
+
+
+==========================================================================
+4. There is no cawf support for nroff or troff predefined read-only number
+   registers.
+==========================================================================
+
+  Register
+  Name		Description
+
+  .$		Number of arguments available at the current macro level
+  .A		Set to 1 in troff, if -a option used; always 1 in nroff
+  .H		Available horizontal resolution in basic units
+  .L		Set to current line-spacing (ls) parameter.
+  .P		Set to 1 if the current page is being printed; otherwise 0.
+  .T		Set to 1 in nroff, if \-T option used; always 0 in troff.
+  .V		Available vertical resolution in basic units
+  .a		Post-line extra line-space most recently utilized \
+  .c		Number of lines read from current input file
+  .d		Current vertical place in current diversion; equal to nl,
+		if no diversion
+  .f		Current font as physical quadrant (1-4)
+  .h		Text base-line high-water mark on current page or diversion
+  .i		Current indent
+  .j		Current adjustment mode and type
+  .k		Length of text portion on current partial output line
+  .l		Current line length
+  .n		Length of text portion on previous output line
+  .o		Current page offset
+  .p		Current page length
+  .s		Current point size
+  .t		Distance to the next trap
+  .u		Equal to 1 in fill mode and 0 in nofill mode
+  .v		Current vertical line spacing
+  .w		Width of previous character
+  .x		Reserved version-dependent register
+  .y		Reserved version-dependent register
+  .z		Name of current diversion
+
+
+==========================================================================
+5. Cawf defines some nroff and troff special characters its dumb.dev file.
+   Their display is effected with overstrike -- i.e., combinations of
+   characters and interspersed backspaces.
+==========================================================================
+
+	Character
+	Escape Code	Description
+
+	\(bu		bullet
+	\(sq		square
+	\(ru		rule
+	\(14		1/l4
+	\(12		1/l2
+	\(34		3/l4
+	\(de		degree
+	\(dg		dagger
+	\(fm		foot mark
+	\(ct		cent sign
+	\(rg		registered
+	\(co		copyright
+	\(pl		math plus
+	\(mi		math minus
+	\(eq		math equals
+	\(**		math star
+	\(sc		section
+	\(aa		acute accent
+	\(ga		grave accent
+	\(ul		underrule
+	\(sl		slash (matching backslash)
+	\(*a		alpha
+	\(*b		beta
+	\(*g		gamma
+	\(*d		delta
+	\(*e		epsilon
+	\(*z		zeta
+	\(*y		eta
+	\(*h		theta
+	\(*i		iota
+	\(*k		kappa
+	\(*l		lambda
+	\(*m		mu
+	\(*n		nu
+	\(*c		xi
+	\(*o		omicron
+	\(*p		pi
+	\(*r		rho
+	\(*s		sigma
+	\(ts		terminal sigma
+	\(*t		tau
+	\(*u		upsilon
+	\(*f		phi
+	\(*x		chi
+	\(*q		psi
+	\(*w		omega
+	\(*G		Gamma
+	\(*D		Delta
+	\(*H		Theta
+	\(*L		Lambda
+	\(*C		Xi
+	\(*P		Pi
+	\(*S		Sigma
+	\(*U		Upsilon
+	\(*F		Phi
+	\(*Q		Psi
+	\(*W		Omega
+	\(sr		square root
+	\(rn		root en extender
+	\(>=		>=
+	\(<=		<=
+	\(==		identically equal
+	\(~=		approximately =
+	\(ap		approximates
+	\(!=		not equal
+	\(->		right arrow
+	\(<-		left arrow
+	\(ua		up arrow
+	\(da		down arrow
+	\(mu		multiply
+	\(di		divide
+	\(+-		plus-minus
+	\(cu		cup (union)
+	\(ca		cap (intersection)
+	\(sb		subset of
+	\(sp		superset of
+	\(ib		improper subset
+	\(ip		improper superset
+	\(if		infinity
+	\(pd		partial derivative
+	\(gr		gradient
+	\(no		not
+	\(is		integral sign
+	\(pt		proportional to
+	\(es		empty set
+	\(mo		member of
+	\(br		box vertical rule
+	\(dd		double dagger
+	\(rh		right hand
+	\(lh		left hand
+	\(bs		Bell System logo
+	\(or		or
+	\(ci		circle
+	\(lt		left top of big curly bracket
+	\(lb		left bottom
+	\(rt		right top
+	\(rb		right bottom
+	\(lk		left center of big curly bracket
+	\(rk		right center of big curly bracket
+	\(bv		bold vertical
+	\(lf		left floor (left bottom of big square bracket)
+	\(rf		right floor (right bottom)
+	\(lc		left ceiling (left top)
+	\(rc		right ceiling (right top)
+
+
+Vic Abell <abe@purdue.edu>
